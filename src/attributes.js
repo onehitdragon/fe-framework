@@ -33,6 +33,9 @@ function setAttribute(elementNode, attrName, value){
     else if(attrName.startsWith('data-')){
         elementNode.setAttribute(attrName, value);
     }
+    else if(attrName == "for"){
+        elementNode.setAttribute(attrName, value);
+    }
     else{
         elementNode[attrName] = value;
     }
