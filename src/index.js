@@ -16,14 +16,14 @@ function App(state){
 
 function CreateTodo(state){
     return hFragment([
-        hElement("h5", {}, ["New TODO"]),
-        hElement("input", { type: "text", label: "todo" }),
+        hElement("h4", { style: { color: "green" } }, ["New TODO"]),
+        hElement("input", { type: "text", name: "todo" }),
         hElement("button", { on: { click: () => state.todos.push("some thing") } }, ["Add"])
     ]);
 }
 
 function TodoList(state){
-    return hElement("ul", {}, 
+    return hElement("ul", {},
         state.todos.map((todo, i) => TodoItem(todo, i, state.editingIdxs))
     );
 }
@@ -53,5 +53,4 @@ function TodoInEditMode(todo, idxInList){
 }
 
 const vDom = App(appState);
-console.log(vDom);
 mountDOM(vDom, document.body);

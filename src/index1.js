@@ -1,3 +1,4 @@
+import { destroyDOM } from "./destroy-dom.js";
 import { hElement } from "./h.js";
 import { mountDOM } from "./mount-dom.js";
 
