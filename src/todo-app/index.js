@@ -1,6 +1,5 @@
 import { createApp } from "../app.js";
 import { hElement, hFragment } from "../h.js";
-import { mountDOM } from "../mount-dom.js";
 
 const initState = {
     todos: ["Walk the dog", "Water the plants"],
@@ -76,7 +75,7 @@ function App(state, dispatch){
 
 function CreateTodo(state, dispatch){
     return hElement("div", {}, [
-        hElement("label", { for: "todo-input" }, ["New TODOs"]),
+        hElement("label", { for: "todo-input", class: ["blue", "red"] }, ["New TODOs"]),
         hElement("input", {
             id: "todo-input",
             type: "text",
