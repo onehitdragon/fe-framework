@@ -13,8 +13,8 @@ export function mapTextNodes(vNodes){
 }
 export function arraysDiff(oldArray, newArray){
     return {
-        added: newArray.filter(item => !oldArray.include(item)),
-        removed: oldArray.filter(item => !newArray.include(item))
+        added: newArray.filter(item => !oldArray.includes(item)),
+        removed: oldArray.filter(item => !newArray.includes(item))
     }
 }
 export const ARRAY_DIFF_OP = {
@@ -26,7 +26,8 @@ export const ARRAY_DIFF_OP = {
 export function arraysDiffSequence(oldArray, newArray, equalFunc){
     const originalArray = [...oldArray];
     const sequence = [];
-    for(let i = 0; i < newArray.length && i < 100;){
+    let i = 0;
+    while(i < newArray.length){
         if(i >= originalArray.length){
             sequence.push(createAddOp(newArray[i], i));
             originalArray.push(newArray[i]);
@@ -35,7 +36,7 @@ export function arraysDiffSequence(oldArray, newArray, equalFunc){
         }
         const isEqual = equalFunc(originalArray[i], newArray[i]);
         if(isEqual){
-            sequence.push(createNoopOp(i));
+            sequence.push(createNoopOp(originalArray[i], newArray[i]));
             i++;
             continue;
         }
@@ -47,7 +48,10 @@ export function arraysDiffSequence(oldArray, newArray, equalFunc){
         }
         const newItemIndexInOldArray = itemIndexInArray(newArray[i], originalArray, equalFunc, i + 1);
         if(newItemIndexInOldArray != -1){
-            sequence.push(createMoveOp(newItemIndexInOldArray, i));
+            sequence.push(createMoveOp(
+                newItemIndexInOldArray, i,
+                originalArray[newItemIndexInOldArray], newArray[i]
+            ));
             const deleted = originalArray.splice(newItemIndexInOldArray, 1);
             originalArray.splice(i, 0, ...deleted);
             i++;
@@ -59,6 +63,10 @@ export function arraysDiffSequence(oldArray, newArray, equalFunc){
             i++;
             continue;
         }
+    }
+    while(i < originalArray.length){
+        sequence.push(createRemoveOp(i));
+        originalArray.splice(i, 1);
     }
     return sequence;
 }
@@ -81,16 +89,19 @@ function createRemoveOp(index){
         index
     }
 }
-function createMoveOp(from, to){
+function createMoveOp(from, to, oldItem, newItem){
     return {
         type: ARRAY_DIFF_OP.MOVE,
         from,
-        to 
+        to,
+        oldItem,
+        newItem
     }
 }
-function createNoopOp(index){
+function createNoopOp(oldItem, newItem){
     return {
         type: ARRAY_DIFF_OP.NOOP,
-        index
+        oldItem,
+        newItem
     }
 }

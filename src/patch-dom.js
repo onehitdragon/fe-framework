@@ -20,7 +20,7 @@ export function patchDOM(oldVdom, newVdom){
 }
 function patchTextNode(oldNode, newNode){
     const el = oldNode.el;
-    if(el.value != newNode.value){
+    if(el.nodeValue != newNode.value){
         el.nodeValue = newNode.value;
     }
     newNode.el = el;
@@ -41,7 +41,11 @@ function patchChildren(oldChildren, newChildren, parentEl){
     for(const op of sequence){
         if(op.type == ARRAY_DIFF_OP.REMOVE) removeChildElementAt(parentEl, op.index);
         if(op.type == ARRAY_DIFF_OP.ADD) mountDOMAt(op.item, parentEl, op.index);
-        if(op.type == ARRAY_DIFF_OP.MOVE) moveChildElement(parentEl, op.from, op.to);
+        if(op.type == ARRAY_DIFF_OP.MOVE) {
+            moveChildElement(parentEl, op.from, op.to);
+            patchDOM(op.oldItem, op.newItem);
+        }
+        if(op.type == ARRAY_DIFF_OP.NOOP) patchDOM(op.oldItem, op.newItem);
     }
 }
 function removeChildElementAt(parentEl, index){

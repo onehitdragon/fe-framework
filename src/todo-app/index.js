@@ -2,7 +2,7 @@ import { createApp } from "../app.js";
 import { hElement, hFragment } from "../h.js";
 
 const initState = {
-    todos: ["Walk the dog", "Water the plants"],
+    todos: ["Walk the dog", "Visit relatives", "Water the plants"],
     currentTodo: "",
     edit: {
         idx: null,
